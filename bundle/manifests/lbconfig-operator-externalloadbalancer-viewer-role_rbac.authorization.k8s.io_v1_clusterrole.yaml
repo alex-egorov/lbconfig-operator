@@ -5,13 +5,23 @@ metadata:
   labels:
     app.kubernetes.io/component: kube-rbac-proxy
     app.kubernetes.io/created-by: lbconfig-operator
-    app.kubernetes.io/instance: metrics-reader
+    app.kubernetes.io/instance: externalloadbalancer-viewer-role
     app.kubernetes.io/managed-by: kustomize
     app.kubernetes.io/name: clusterrole
     app.kubernetes.io/part-of: lbconfig-operator
-  name: lbconfig-operator-metrics-reader
+  name: lbconfig-operator-externalloadbalancer-viewer-role
 rules:
-- nonResourceURLs:
-  - /metrics
+- apiGroups:
+  - lb.lbconfig.carlosedp.com
+  resources:
+  - externalloadbalancers
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - lb.lbconfig.carlosedp.com
+  resources:
+  - externalloadbalancers/status
   verbs:
   - get
