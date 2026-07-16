@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# Pre-push hook to run the linter and make bundle
+
+echo "Running make lint before push..."
+
+# Run golangci-lint (same config and version as CI)
+if ! make lint; then
+    echo "❌ make lint failed. Push aborted."
+    echo "Fix the issues (try 'make lint-fix') or bypass with 'git push --no-verify'."
+    exit 1
+fi
+
+echo "Running make bundle before push..."
+
+# Run make bundle
+if ! make bundle; then
+    echo "❌ make bundle failed. Push aborted."
+    exit 1
+fi
+
+# Check if bundle files were modified (ignoring createdAt timestamp changes)
+if ! git diff --quiet -I'^    createdAt: ' bundle/; then
+    echo "⚠️  Bundle files were updated by make bundle."
+    echo "Please review and commit the changes before pushing:"
+    echo "  git add bundle/"
+    echo "  git commit -m 'Update bundle manifests'"
+    echo "  git push"
+    exit 1
+fi
+
+echo "✅ make bundle completed successfully, no bundle changes detected."
+exit 0

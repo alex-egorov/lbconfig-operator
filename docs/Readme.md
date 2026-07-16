@@ -19,6 +19,7 @@ This file aggregates all documentation for the operator. Some information is als
 - [Adding new Backends](Creating_Backends.md)
 - [Operator Tracing with Jaeger](Tracing.md)
 - [Developing and Testing](Developing_Testing.md)
+- [End-to-End Testing Guide](E2E_Testing.md)
 - [HAProxy Backend](./haproxy/Readme.md)
 - [Releasing a new version](./Release_new_version.md)
 
@@ -38,7 +39,7 @@ The operator dynamically handles creating, updating or deleting the IPs of the p
 Apply the operator manifest into the cluster:
 
 ```sh
-kubectl apply -f https://github.com/carlosedp/lbconfig-operator/raw/v0.2.0/manifests/deploy.yaml
+kubectl apply -f https://github.com/carlosedp/lbconfig-operator/raw/v0.2.0/dist/install.yaml
 ```
 
 This creates the operator Namespace, CRD and deployment using the latest container version. The container image is built for `amd64`, `arm64`, `ppc64le` and `s390x` architectures.
@@ -131,7 +132,7 @@ spec:
   ...
 ```
 
-Some fields inside `providers` are optional and depend on the used backend. Check the [API docs](https://pkg.go.dev/github.com/carlosedp/lbconfig-operator/apis/externalloadbalancer/v1?utm_source=gopls#Provider) which fields are backend-specific.
+Some fields inside `providers` are optional and depend on the used backend. Check the [API docs](https://pkg.go.dev/github.com/carlosedp/lbconfig-operator/api/v1?utm_source=gopls#Provider) which fields are backend-specific.
 
 CRD Fields:
 
@@ -161,7 +162,7 @@ spec:
     validatecerts: false  # Should check the certificates if API uses HTTPS (true or false) (optional)
 ```
 
-For more details, check the API documentation at <https://pkg.go.dev/github.com/carlosedp/lbconfig-operator/apis/externalloadbalancer/v1?utm_source=gopls#pkg-types>.
+For more details, check the API documentation at <https://pkg.go.dev/github.com/carlosedp/lbconfig-operator/apis/lb.lbconfig.carlosedp.com/v1?utm_source=gopls#pkg-types>.
 
 ## Health Check
 

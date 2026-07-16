@@ -34,7 +34,7 @@ The main users for this operator is enterprise deployments or clusters composed 
 Apply the operator manifest into the cluster:
 
 ```sh
-kubectl apply -f https://github.com/carlosedp/lbconfig-operator/raw/v0.4.1/manifests/deploy.yaml
+kubectl apply -f https://github.com/carlosedp/lbconfig-operator/raw/v0.6.0/dist/install.yaml
 ```
 
 This creates the operator Namespace, CRD and deployment using the latest container version. The container image is built for `amd64`, `arm64`, `ppc64le` and `s390x` architectures.
@@ -45,10 +45,10 @@ Create the instances for each Load Balancer instance you need (for example one f
 
 **The provider `vendor` field can be (case-sensitive):**
 
-* **`F5_BigIP`** - Tested on F5 BigIP version 15
-* **`Citrix_ADC`** - Tested on Citrix ADC (Netscaler) version 13
-* **`HAProxy`** - HAProxy with Dataplane API. ([Docs](./docs/haproxy/))
-* **`Dummy`** - Dummy backend used for testing to only print log messages on operations
+- **`F5_BigIP`** - Tested on F5 BigIP version 15
+- **`Citrix_ADC`** - Tested on Citrix ADC (Netscaler) version 13
+- **`HAProxy`** - HAProxy with Dataplane API. ([Docs](./docs/haproxy/))
+- **`Dummy`** - Dummy backend used for testing to only print log messages on operations
 
 Create the secret holding the Load Balancer API user and password:
 
@@ -131,12 +131,39 @@ spec:
   ...
 ```
 
+## Development
+
+### Getting Started
+
+After cloning the repository, run the setup command to prepare your development environment:
+
+```sh
+make setup
+```
+
+This installs Git hooks that, before pushing, run `make lint` (golangci-lint, same config and version as CI) and `make bundle` to keep bundle manifests in sync. This catches lint issues locally instead of waiting for the GitHub CI run.
+
+Alternatively, the hooks are automatically installed when you run common development commands like:
+
+- `make test`
+- `make manifests`
+
+To bypass the pre-push hook temporarily: `git push --no-verify`
+
+### Manual Hook Installation
+
+If needed, you can manually install the hooks:
+
+```sh
+make install-hooks
+```
+
 ## Additional information
 
 Please check the [additional documentation](docs/Readme.md) for more information like tracing, adding new providers, development, release and more.
 
 ## Disclaimers
 
-* The operator does not check if the requested configuration (names, IPs) already exists and/or conflicts with existing configuration in the Load Balancer. The user is responsible for these checks before deployment;
-* I am not responsible if the operator changes/deletes existing configuration on the Load Balancer if existing names are already configured.
-* The operator creates the entries(Pools, VIPs, Monitors) in the provided Load Balancer with the `name` of the instance configured in the CustomResource prefixed with the type. Eg. For a CR with name `externalloadbalancer-master-sample`, the operator creates a server pool named `Pool-externalloadbalancer-master-sample-6443` (suffixed with the port), a monitor named `Monitor-externalloadbalancer-master-sample` and a VIP named `VIP-externalloadbalancer-master-sample-6443` (suffixed with the port).
+- The operator does not check if the requested configuration (names, IPs) already exists and/or conflicts with existing configuration in the Load Balancer. The user is responsible for these checks before deployment;
+- I am not responsible if the operator changes/deletes existing configuration on the Load Balancer if existing names are already configured.
+- The operator creates the entries(Pools, VIPs, Monitors) in the provided Load Balancer with the `name` of the instance configured in the CustomResource prefixed with the type. Eg. For a CR with name `externalloadbalancer-master-sample`, the operator creates a server pool named `Pool-externalloadbalancer-master-sample-6443` (suffixed with the port), a monitor named `Monitor-externalloadbalancer-master-sample` and a VIP named `VIP-externalloadbalancer-master-sample-6443` (suffixed with the port).
